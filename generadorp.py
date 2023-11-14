@@ -15,65 +15,33 @@ def get_tweets(path, fecha_inicial, fecha_final, hashtags):
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     size = comm.Get_size()
-    for year_folder in os.listdir(path):
-        year_path = os.path.join(path, year_folder)
-        year = int(year_folder)
-        pass1 = 1
-        lower = 0
-        upper = 0
-        if fecha_inicial.year <= year <= fecha_final.year:
-            if (fecha_inicial.year == year or fecha_final.year == year):
-                pass1 = 0
-                if fecha_inicial.year == year:
-                    lower = 1
-                if fecha_final.year == year:
-                    upper = 1
-            for month_folder in os.listdir(year_path):
-                month_path = os.path.join(year_path, month_folder)
-                month = int(month_folder)
-                if ((fecha_inicial.month <= month and lower ==1) or (month <= fecha_final.month and upper == 1) | pass1==1):
-                    if (fecha_inicial.month == month or fecha_final.month == month):
-                        if fecha_inicial.month == month:
-                            lower = 1
-                        else:
-                            lower = 0
-                        if fecha_final.month == month:
-                            upper = 1
-                        else:
-                            upper = 0
-                    else:
-                        pass1 = 1
-                        upper = 0
-                        lower = 0
-                    for day_folder in os.listdir(month_path):
-                        day_path = os.path.join(month_path, day_folder)
-                        day = int(day_folder)
-                        if ((fecha_inicial.day <= day and lower ==1) or (day <= fecha_final.day and upper == 1) or pass1==1):
-                            for root, dirs, files in os.walk(day_path):
-                                for file in files:
-                                        cont = cont + 1
-                                        if (file.endswith(".json.bz2") and cont % size == rank):
-                                                file_path = os.path.join(root, file)
-                                                with bz2.BZ2File(file_path, "r") as f: #r
-                                                    try:
-                                                        for line in f:
-                                                            if line.strip():
-                                                                tweet = json.loads(line)
-                                                                if "created_at" in tweet:
-                                                                    if hashtags:
-                                                                        if tweet["entities"]["hashtags"]:
-                                                                            hashtexts = [hashtag["text"] for hashtag in tweet["entities"]["hashtags"]]
-                                                                            added = 0
-                                                                            if (any(item in hashtexts for item in hashtags) and added==0): #Para que no se guarde varias veces el mismo tweet
-                                                                                tweets.append(tweet)
-                                                                                added = 1
-                                                                    else:
-                                                                        tweets.append(tweet)
-                                                    except UnicodeDecodeError:
-                                                        print(f"Error de codificación en el archivo: {file_path}")
-                                                    except json.decoder.JSONDecodeError as e:
-                                                        print(f"Error de JSON en el archivo: {file_path}")
-                                                        print(e)
+    for root, dirs, files in os.walk(path):
+        for file in files:
+                cont = cont + 1
+                if (file.endswith(".json.bz2") and cont % size == rank):
+                        file_path = os.path.join(root, file)
+                        with bz2.BZ2File(file_path, "r") as f: #r
+                            try:
+                                for line in f:
+                                    if line.strip():
+                                        tweet = json.loads(line)
+                                        if "created_at" in tweet:
+                                            tweet_created_at = datetime.strptime(tweet["created_at"], "%a %b %d %H:%M:%S %z %Y")
+                                            if fecha_inicial.date()<=tweet_created_at.date()<=fecha_final.date():
+                                              if hashtags:
+                                                if tweet["entities"]["hashtags"]:
+                                                    hashtexts = [hashtag["text"] for hashtag in tweet["entities"]["hashtags"]]
+                                                    added = 0
+                                                    if (any(item in hashtexts for item in hashtags) and added==0): #Para que no se guarde varias veces el mismo tweet
+                                                        tweets.append(tweet)
+                                                        added = 1
+                                            else:
+                                                tweets.append(tweet)
+                            except UnicodeDecodeError:
+                                print(f"Error de codificación en el archivo: {file_path}")
+                            except json.decoder.JSONDecodeError as e:
+                                print(f"Error de JSON en el archivo: {file_path}")
+                                print(e)
     return tweets
 
 # Crear los grafos y JSON
