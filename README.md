@@ -7,4 +7,4 @@ Para los hashtags puedes usar o no el #, es decir, tanto #DmMeCarter como DmMeCa
 
 Se consiguió reducir el tiempo de ejecución a algo menos de la mitad. La mayor eficiencia se consigue con 6 nodos (-n 6) y la peor con 2 nodos. Sin embargo, la diferencia en tiempo no varía demasiado cambiando la cantidad de nodos.
 
-Espero una buena nota pls 🤠👍
+Espero un 5 pls 🤠👍
