@@ -35,7 +35,7 @@ def get_tweets(path, fecha_inicial, fecha_final, hashtags):
                                                     if (any(item in hashtexts for item in hashtags) and added==0): #Para que no se guarde varias veces el mismo tweet
                                                         tweets.append(tweet)
                                                         added = 1
-                                            else:
+                                              else:
                                                 tweets.append(tweet)
                             except UnicodeDecodeError:
                                 print(f"Error de codificación en el archivo: {file_path}")
