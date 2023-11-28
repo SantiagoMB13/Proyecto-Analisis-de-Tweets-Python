@@ -313,10 +313,10 @@ def main():
     fecha_final =   datetime.strptime("01-01-2024", "%d-%m-%Y")
 
     if args["fecha_inicial"]:
-        fecha_inicial = datetime.strptime(args["fecha_inicial"], "%d-%m-%Y")
+        fecha_inicial = datetime.strptime(args["fecha_inicial"], "%d-%m-%y")
 
     if args["fecha_final"]:
-        fecha_final = datetime.strptime(args["fecha_final"], "%d-%m-%Y")
+        fecha_final = datetime.strptime(args["fecha_final"], "%d-%m-%y")
 
     hashtagsl = []
     if args["hashtags"]:
