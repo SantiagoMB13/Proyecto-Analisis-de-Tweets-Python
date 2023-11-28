@@ -28,8 +28,9 @@ def get_tweets(path, fecha_inicial, fecha_final, hashtags, size, rank):
                                               if hashtags:
                                                 if tweet["entities"]["hashtags"]:
                                                     hashtexts = [hashtag["text"].lower() for hashtag in tweet["entities"]["hashtags"]]
+                                                    hashtextsn = [palabra.lower() for palabra in hashtexts]
                                                     added = 0
-                                                    if (any(item in hashtexts for item in hashtags) and added==0): #Para que no se guarde varias veces el mismo tweet
+                                                    if (any(item in hashtextsn for item in hashtags) and added==0): #Para que no se guarde varias veces el mismo tweet
                                                         tweets.append(tweet)
                                                         added = 1
                                               else:
