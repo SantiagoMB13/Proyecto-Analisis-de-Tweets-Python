@@ -9,12 +9,9 @@ import bz2
 from itertools import combinations
 from mpi4py import MPI
 
-def get_tweets(path, fecha_inicial, fecha_final, hashtags):
+def get_tweets(path, fecha_inicial, fecha_final, hashtags, size, rank):
     tweets = []
     cont = -1
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    size = comm.Get_size()
     for root, dirs, files in os.walk(path):
         for file in files:
                 cont = cont + 1
@@ -388,9 +385,7 @@ def parse_args(argv):
        args["directory"] = "data"
     return args
 
-def main():
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
+def main(rank, comm, size):
     args = parse_args(sys.argv[1:])
     
     fecha_inicial = datetime.strptime("01-01-1990", "%d-%m-%Y")
@@ -413,7 +408,7 @@ def main():
             if word.startswith("#"):
                 hashtagsl[index] = word[1:]
 
-    tweets = get_tweets(args["directory"], fecha_inicial, fecha_final, hashtagsl)
+    tweets = get_tweets(args["directory"], fecha_inicial, fecha_final, hashtagsl, size, rank)
 
     if args["grt"]:
         grafoprt = crear_grafo_retweets(tweets)
@@ -466,4 +461,7 @@ def main():
 
 if __name__ == "__main__":
     start_time = time.time()
-    main()
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    size = comm.Get_size()
+    main(rank, comm, size)
