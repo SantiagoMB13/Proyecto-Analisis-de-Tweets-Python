@@ -1,4 +1,4 @@
-# Proyecto-Paralelizado-Tweets-Mercado
+# Proyecto-Análisis-Tweets-Python-Paralelizado
 El archivo se probó en Docker con la imagen modificada que le mandé por correo y funcionó correctamente.
 
 El filtro de fecha_inicial y fecha_final es inclusivo, es decir que si por ejemplo fi es 01/01/2016, se incluiran los tweets del 01/01/2016 en adelante.
